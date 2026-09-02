@@ -1,0 +1,262 @@
+{% extends "base.html" %}
+{% block title %}Personal Finance Dashboard{% endblock %}
+{% block content %}
+<h1>Finance Dashboard</h1>
+
+    <div style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
+        <div class="section" style="flex: 1; text-align: center; margin:0; min-width: 200px;">
+            <h3 style="margin:0; color:#7f8c8d; font-size: 0.9rem;">Total Transactions</h3>
+            <p style="font-size: 22px; font-weight: bold; margin: 10px 0 0;">{{ total_transactions }}</p>
+        </div>
+
+        <a href="{{ url_for('transactions.transactions_page') }}" style="text-decoration: none; color: inherit; flex: 1; min-width: 200px;">
+            <div class="section" style="text-align: center; margin:0; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='none'">
+                <h3 style="margin:0; color:#7f8c8d; font-size: 0.9rem;">Total Income ↗</h3>
+                <p class="income" style="font-size: 22px; font-weight: bold; margin: 10px 0 0;">{{ total_income }}</p>
+            </div>
+        </a>
+
+        <a href="{{ url_for('transactions.transactions_page') }}" style="text-decoration: none; color: inherit; flex: 1; min-width: 200px;">
+            <div class="section" style="text-align: center; margin:0; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='none'">
+                <h3 style="margin:0; color:#7f8c8d; font-size: 0.9rem;">Total Expense ↗</h3>
+                <p class="expense" style="font-size: 22px; font-weight: bold; margin: 10px 0 0;">{{ total_expense }}</p>
+            </div>
+        </a>
+
+        <div class="section" style="flex: 1; text-align: center; margin:0; min-width: 200px;">
+            <h3 style="margin:0; color:#7f8c8d; font-size: 0.9rem;">Net Balance</h3>
+            <p style="font-size: 22px; font-weight: bold; margin: 10px 0 0;">{{ net_balance }}</p>
+        </div>
+
+        <a href="{{ url_for('assets.assets_page') }}" style="text-decoration: none; color: inherit; flex: 1; min-width: 200px;">
+            <div class="section" style="text-align: center; margin:0; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='none'">
+                <h3 style="margin:0; color:#7f8c8d; font-size: 0.9rem;">Total Assets ↗</h3>
+                <p style="font-size: 22px; font-weight: bold; margin: 10px 0 0;">{{ total_assets }}</p>
+            </div>
+        </a>
+
+        <a href="{{ url_for('goals.goals_page') }}" style="text-decoration: none; color: inherit; flex: 1; min-width: 200px;">
+            <div class="section" style="text-align: center; margin:0; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='none'">
+                <h3 style="margin:0; color:#7f8c8d; font-size: 0.9rem;">Goal Savings ↗</h3>
+                <p class="income" style="font-size: 22px; font-weight: bold; margin: 10px 0 0;">{{ total_savings }}</p>
+            </div>
+        </a>
+
+        <a href="{{ url_for('goals.goals_page') }}" style="text-decoration: none; color: inherit; flex: 1; min-width: 200px;">
+            <div class="section" style="text-align: center; margin:0; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='none'">
+                <h3 style="margin:0; color:#7f8c8d; font-size: 0.9rem;">Running Targets ↗</h3>
+                <p style="font-size: 22px; font-weight: bold; margin: 10px 0 0;">{{ total_target_goals }}</p>
+            </div>
+        </a>
+
+        <a href="{{ url_for('goals.goals_page') }}" style="text-decoration: none; color: inherit; flex: 1; min-width: 200px;">
+            <div class="section" style="text-align: center; margin:0; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='none'">
+                <h3 style="margin:0; color:#7f8c8d; font-size: 0.9rem;">Total Goals ↗</h3>
+                <p style="font-size: 22px; font-weight: bold; margin: 10px 0 0; color: var(--primary);">{{ total_goals_count }}</p>
+            </div>
+        </a>
+    </div>
+
+    <div class="section">
+        <h3>Filter Transactions by Date</h3>
+        <form method="GET" action="/">
+            <label for="start_date">From:</label>
+            <input type="date" id="start_date" name="start_date" value="{{ start_date }}">
+            
+            <label for="end_date">To:</label>
+            <input type="date" id="end_date" name="end_date" value="{{ end_date }}">
+            
+            <button type="submit">Apply Filter</button>
+            <a href="/" style="text-decoration: none; padding: 8px 12px; background: #95a5a6; color: white; border-radius: 4px; display:inline-block;">Reset (Last 30 Days)</a>
+        </form>
+    </div>
+
+    <div class="section">
+        <h2>Visual Analytics & Charts (From: {{ start_date }} To: {{ end_date }})</h2>
+        <div style="display: flex; gap: 20px; justify-content: space-around; flex-wrap: wrap;">
+            <div style="text-align: center;">
+                <p><strong>Income vs Expense Ratio</strong></p>
+                <img src="{{ url_for('static', filename='charts/income_expense_pie.png') }}" alt="Income vs Expense Pie Chart">
+            </div>
+            <div style="text-align: center;">
+                <p><strong>Expense Breakdown by Category</strong></p>
+                <img src="{{ url_for('static', filename='charts/expense_by_category.png') }}" alt="Expense Category Bar Chart">
+            </div>
+            <div style="text-align: center;">
+                <p><strong>Asset Distribution</strong></p>
+                <img src="{{ url_for('static', filename='charts/assets_pie.png') }}" alt="Asset Distribution Chart">
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Transactions Overview (Period: {{ start_date }} to {{ end_date }})</h2>
+        
+        <div style="margin-bottom: 20px; display: flex; gap: 10px; border-bottom: 2px solid #eee; padding-bottom: 15px; flex-wrap: wrap;">
+            <button type="button" class="trans-tab-btn" onclick="openTransTab(event, 'incomeTab')" style="padding: 8px 16px; background: #2c3e50; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">Income Transactions ({{ incomes | length }})</button>
+            <button type="button" class="trans-tab-btn" onclick="openTransTab(event, 'expenseTab')" style="padding: 8px 16px; background: #ecf0f1; color: #333; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">Expense Transactions ({{ expenses | length }})</button>
+        </div>
+
+        <div id="incomeTab" class="trans-tab-content" style="display: block;">
+            <h3 class="income">Income Transactions</h3>
+            <table>
+                <tr><th>Date</th><th>Title</th><th>Amount</th><th>Category</th></tr>
+                {% for item in incomes %}
+                <tr><td>{{ item.date }}</td><td>{{ item.title }}</td><td class="income">+{{ item.amount }}</td><td>{{ item.category }}</td></tr>
+                {% else %}
+                <tr><td colspan="4">No income records found for this period.</td></tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <div id="expenseTab" class="trans-tab-content" style="display: none;">
+            <h3 class="expense">Expense Transactions</h3>
+            <table>
+                <tr><th>Date</th><th>Title</th><th>Amount</th><th>Category</th></tr>
+                {% for item in expenses %}
+                <tr><td>{{ item.date }}</td><td>{{ item.title }}</td><td class="expense">-{{ item.amount }}</td><td>{{ item.category }}</td></tr>
+                {% else %}
+                <tr><td colspan="4">No expense records found for this period.</td></tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Portfolio & Planning Overview</h2>
+        
+        <div style="margin-bottom: 20px; display: flex; gap: 10px; border-bottom: 2px solid #eee; padding-bottom: 15px; flex-wrap: wrap;">
+            <button type="button" class="portfolio-tab-btn" onclick="openPortfolioTab(event, 'assetsTab')" style="padding: 8px 16px; background: #2c3e50; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">Active Assets ({{ assets | length }})</button>
+            <button type="button" class="portfolio-tab-btn" onclick="openPortfolioTab(event, 'goalsTab')" style="padding: 8px 16px; background: #ecf0f1; color: #333; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">Financial Goals ({{ goals | length }})</button>
+            <button type="button" class="portfolio-tab-btn" onclick="openPortfolioTab(event, 'budgetsTab')" style="padding: 8px 16px; background: #ecf0f1; color: #333; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">Budgets Overview ({{ budgets | length }})</button>
+        </div>
+
+        <div id="assetsTab" class="portfolio-tab-content" style="display: block;">
+            <h3>Active Assets</h3>
+            <table>
+                <tr><th>Date</th><th>Name</th><th>Value</th><th>Type</th></tr>
+                {% for item in assets %}
+                <tr><td>{{ item.date }}</td><td>{{ item.name }}</td><td>{{ item.value }}</td><td>{{ item.type }}</td></tr>
+                {% else %}
+                <tr><td colspan="4">No active assets recorded.</td></tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <div id="goalsTab" class="portfolio-tab-content" style="display: none;">
+            <h3>Financial Goals Overview</h3>
+            <table>
+                <tr><th>Title</th><th>Target Amount</th><th>Current Savings</th><th>Deadline</th><th>Status</th></tr>
+                {% for item in goals %}
+                <tr {% if item.completed %}style="background-color: #e8f8f5;"{% endif %}>
+                    <td>{{ item.title }}</td>
+                    <td>{{ item.target_amount }}</td>
+                    <td class="income">{{ item.current_amount }}</td>
+                    <td>{{ item.deadline }}</td>
+                    <td>
+                        {% if item.completed %}
+                            <span style="color: #27ae60; font-weight: bold;">✅ Target Completed</span>
+                        {% else %}
+                            <span style="color: #f39c12; font-weight: bold;">⏳ In Progress</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="5">No goals recorded.</td></tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <div id="budgetsTab" class="portfolio-tab-content" style="display: none;">
+            <h3>Budgets Overview</h3>
+            <table>
+                <tr>
+                    <th>Category</th>
+                    <th>Monthly Limit</th>
+                    <th>Spent Amount</th>
+                    <th>Status / Warning</th>
+                </tr>
+                {% for item in budgets %}
+                <tr {% if item.exceeded %}style="background-color: #fde8e8;"{% endif %}>
+                    <td>{{ item.category }}</td>
+                    <td>{{ item.monthly_limit }}</td>
+                    <td class="expense">{{ "%.2f"|format(item.spent) }}</td>
+                    <td>
+                        {% if item.exceeded %}
+                            <span style="color: #c0392b; font-weight: bold;">⚠️ Budget Exceeded!</span>
+                        {% else %}
+                            <span style="color: #27ae60; font-weight: bold;">Within Budget</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4">No budgets set.</td></tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>All Recorded Assets (Active & Sold History)</h2>
+        <table>
+            <tr>
+                <th>Date</th>
+                <th>Name</th>
+                <th>Value</th>
+                <th>Type</th>
+                <th>Status</th>
+            </tr>
+            {% for item in all_assets %}
+            <tr {% if item.status and item.status.lower() == 'sold' %}style="background-color: #e8f8f5;"{% endif %}>
+                <td>{{ item.date }}</td>
+                <td>{{ item.name }}</td>
+                <td>{{ item.value }}</td>
+                <td>{{ item.type }}</td>
+                <td>
+                    {% if item.status and item.status.lower() == 'sold' %}
+                        <span style="color: #27ae60; font-weight: bold;">Sold</span>
+                    {% else %}
+                        <span style="color: #2980b9; font-weight: bold;">Active</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="5">No assets recorded in the system.</td></tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <script>
+    function openTransTab(evt, tabName) {
+        var i, tabContent, tabBtns;
+        tabContent = document.getElementsByClassName("trans-tab-content");
+        for (i = 0; i < tabContent.length; i++) {
+            tabContent[i].style.display = "none";
+        }
+        tabBtns = document.getElementsByClassName("trans-tab-btn");
+        for (i = 0; i < tabBtns.length; i++) {
+            tabBtns[i].style.background = "#ecf0f1";
+            tabBtns[i].style.color = "#333";
+        }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.style.background = "#2c3e50";
+        evt.currentTarget.style.color = "white";
+    }
+
+    function openPortfolioTab(evt, tabName) {
+        var i, tabContent, tabBtns;
+        tabContent = document.getElementsByClassName("portfolio-tab-content");
+        for (i = 0; i < tabContent.length; i++) {
+            tabContent[i].style.display = "none";
+        }
+        tabBtns = document.getElementsByClassName("portfolio-tab-btn");
+        for (i = 0; i < tabBtns.length; i++) {
+            tabBtns[i].style.background = "#ecf0f1";
+            tabBtns[i].style.color = "#333";
+        }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.style.background = "#2c3e50";
+        evt.currentTarget.style.color = "white";
+    }
+    </script>
+{% endblock %}

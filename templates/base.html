@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Finance Manager{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- FontAwesome for modern sidebar icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Sidebar Navigation -->
+        <sidebar id="sidebar">
+            <div class="sidebar-header">
+                <span>FinManager</span>
+                <button class="sidebar-toggle" onclick="toggleSidebar()">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+            <div class="sidebar-nav">
+                <a href="{{ url_for('main.index') }}" title="Dashboard"><i class="fa-solid fa-chart-pie"></i><span>Dashboard</span></a>
+                <a href="{{ url_for('categories.categories_page') }}" title="Categories"><i class="fa-solid fa-tags"></i><span>Categories</span></a>
+                <a href="{{ url_for('transactions.transactions_page') }}" title="Transactions"><i class="fa-solid fa-wallet"></i><span>Transactions</span></a>
+                <a href="{{ url_for('assets.assets_page') }}" title="Assets"><i class="fa-solid fa-vault"></i><span>Assets</span></a>
+                <a href="{{ url_for('goals.goals_page') }}" title="Goals"><i class="fa-solid fa-bullseye"></i><span>Goals</span></a>
+                <a href="{{ url_for('budgets.budgets_page') }}" title="Budgets"><i class="fa-solid fa-scale-balanced"></i><span>Budgets</span></a>
+                <a href="{{ url_for('main.reports_page') }}" title="Reports & Logs"><i class="fa-solid fa-file-lines"></i><span>Reports & Logs</span></a>
+            </div>
+        </sidebar>
+
+        <!-- Main Content Wrapper -->
+        <div class="main-content">
+            <header class="top-bar">
+                <div style="font-weight: 600; color: var(--text-muted);">Finance Control Center</div>
+                <div style="font-size: 0.9rem; font-weight: 500; color: var(--primary);">🟢 System Active</div>
+            </header>
+            <div class="container">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar Toggle Script -->
+    <script>
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        sidebar.classList.toggle('collapsed');
+    }
+    </script>
+</body>
+</html>

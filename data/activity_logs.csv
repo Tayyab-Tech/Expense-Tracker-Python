@@ -1,0 +1,10 @@
+id,date,activity_type,description
+5c49dc18,2026-09-01,Transaction Added,Added Expense: 'Car rent' for 1000 (Travel)
+b0afb560,2026-09-01,Budget Updated,Updated budget limit for category 'Rent' to 25000
+a2524a95,2026-09-02,Asset Updated,Updated asset details for 'Buy a house' (12000000)
+bce8764d,2026-09-02,Goal Updated,Updated financial goal 'Buy a shop'
+e440dd44,2026-09-02,Goal Savings Added,Added 200000.0 to goal savings
+1690f094,2026-09-02,Category Added,Added category 'Education' [Expense]
+143fa61b,2026-09-02,Transaction Added,Added Expense: 'School Fee' for 9000 (Education)
+90d0cc38,2026-09-02,Budget Updated,Updated budget limit for category 'Rent' to 26000
+d5affc14,2026-09-02,Budget Created,Created monthly budget limit of $20000 for category 'Education'

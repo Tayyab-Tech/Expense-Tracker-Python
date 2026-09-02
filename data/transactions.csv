@@ -1,0 +1,8 @@
+id,date,type,title,amount,category
+07620bf7,2026-09-01,Income,Monthly Salary,120000,Salary
+326d1e0e,2026-08-17,Expense,House Rent,22000,Rent
+c5a96be2,2026-08-12,Expense,Grocery,6000,Food
+3a87cef1,2026-08-30,Income,Sold: Buy a Bike,65000,Asset Sell
+37433afc,2026-09-01,Expense,Fruit,5000,Food
+c922af73,2026-09-01,Expense,Car rent,1000,Travel
+42231250,2026-09-02,Expense,School Fee,9000,Education

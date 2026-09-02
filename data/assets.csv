@@ -1,0 +1,4 @@
+id,date,name,value,type,status
+43bfce31,2026-09-01,Buy a house,12000000,Real Estate,active
+15c637f3,2026-09-10,Buy a Bike,65000,Transport,sold
+40136165,2026-09-01,Car,5500000,Transport,active
