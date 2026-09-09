@@ -51,6 +51,7 @@ def ensure_files():
         'assets.csv': ['id', 'date', 'name', 'value', 'type', 'status'],
         'goals.csv': ['id', 'title', 'target_amount', 'current_amount', 'deadline'],
         'budgets.csv': ['id', 'category', 'monthly_limit']
+        ,'subscriptions.csv': ['id', 'name', 'amount', 'category', 'billing_day', 'next_renewal', 'status']
     }
     for filename, headers in files.items():
         filepath = os.path.join(DATA_DIR, filename)

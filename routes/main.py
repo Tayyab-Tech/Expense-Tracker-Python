@@ -3,20 +3,24 @@ import os
 import pandas as pd
 from flask import Blueprint, render_template, request, Response
 from utils import DATA_DIR, load_csv_safely, generate_charts
+from routes.subscriptions import process_due_subscriptions
 
 main_bp = Blueprint('main', __name__)
 
 @main_bp.route('/')
 def index():
+    process_due_subscriptions()
     trans_path = os.path.join(DATA_DIR, 'transactions.csv')
     assets_path = os.path.join(DATA_DIR, 'assets.csv')
     goals_path = os.path.join(DATA_DIR, 'goals.csv')
     budgets_path = os.path.join(DATA_DIR, 'budgets.csv')
+    subscriptions_path = os.path.join(DATA_DIR, 'subscriptions.csv')
 
     df_trans = load_csv_safely(trans_path, ['id', 'date', 'type', 'title', 'amount', 'category'])
     df_assets = load_csv_safely(assets_path, ['id', 'date', 'name', 'value', 'type', 'status'])
     df_goals = load_csv_safely(goals_path, ['id', 'title', 'target_amount', 'current_amount', 'deadline'])
     df_budgets = load_csv_safely(budgets_path, ['id', 'category', 'limit'])
+    df_subscriptions = load_csv_safely(subscriptions_path, ['id', 'name', 'amount', 'category', 'billing_day', 'next_renewal', 'status'])
 
     # Determine correct limit column name in budgets.csv
     limit_col = 'limit' if 'limit' in df_budgets.columns else 'monthly_limit'
@@ -76,6 +80,23 @@ def index():
         expenses = exp_df.to_dict(orient='records')
 
     net_balance = total_income - total_expense
+    recent_transactions = sorted(incomes + expenses, key=lambda item: str(item.get('date', '')), reverse=True)[:7]
+    expense_by_category = {}
+    monthly_income = {}
+    monthly_expense = {}
+    if not df_trans_filtered.empty:
+        chart_df = df_trans_filtered.copy()
+        chart_df['date_dt'] = pd.to_datetime(chart_df['date'], errors='coerce')
+        expense_by_category = {
+            str(category): float(amount)
+            for category, amount in chart_df[chart_df['type'].str.lower() == 'expense']
+            .groupby('category')['amount_num'].sum().sort_values(ascending=False).items()
+        }
+        chart_df['month'] = chart_df['date_dt'].dt.strftime('%b %Y')
+        for month, amount in chart_df[chart_df['type'].str.lower() == 'income'].groupby('month')['amount_num'].sum().items():
+            monthly_income[str(month)] = float(amount)
+        for month, amount in chart_df[chart_df['type'].str.lower() == 'expense'].groupby('month')['amount_num'].sum().items():
+            monthly_expense[str(month)] = float(amount)
 
     # Assets calculation
     total_assets = 0.0
@@ -137,6 +158,14 @@ def index():
             
             budgets_list.append(b_dict)
 
+    active_subscriptions = []
+    monthly_subscription_total = 0.0
+    if not df_subscriptions.empty:
+        active_subscriptions = df_subscriptions[df_subscriptions['status'].str.lower() == 'active'].copy()
+        active_subscriptions['amount_num'] = pd.to_numeric(active_subscriptions['amount'], errors='coerce').fillna(0)
+        monthly_subscription_total = active_subscriptions['amount_num'].sum()
+        active_subscriptions = active_subscriptions.sort_values('next_renewal').to_dict(orient='records')
+
     return render_template('index.html',
                            total_transactions=total_transactions,
                            total_income=total_income,
@@ -148,10 +177,16 @@ def index():
                            total_goals_count=total_goals_count,
                            incomes=incomes,
                            expenses=expenses,
+                           recent_transactions=recent_transactions,
                            assets=assets_active,
                            all_assets=all_assets,
                            goals=goals_list,
                            budgets=budgets_list,
+                           subscriptions=active_subscriptions,
+                           monthly_subscription_total=monthly_subscription_total,
+                           expense_by_category=expense_by_category,
+                           monthly_income=monthly_income,
+                           monthly_expense=monthly_expense,
                            start_date=start_date,
                            end_date=end_date)
 
